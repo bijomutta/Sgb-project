@@ -83,21 +83,29 @@ export class ProductsComponent implements OnInit {
   ngOnInit() {
     this.currentRoute = this.activatedRoute.snapshot.url.join('/');
     console.log(this.currentRoute)
-    var hasSearchTerm = this.currentRoute.includes('search');
-    if (hasSearchTerm) {
-      console.log("SEARCH YESS")
-      this.sub = this.activatedRoute.params.subscribe(params => { 
-       this.productService.filterByName(params['name']).subscribe(res=>{
-        console.log(params['name'])
-        this.products=res;
-        console.log(res)
-       })
-        
-      }); 
-    }
-    else
-    {
-      this.getProducts();
+    const routeTerms = ['men', 'kids', 'women', 'search'];
+    const currentRoute = this.currentRoute;
+
+    const hasRouteTerm = routeTerms.some(term => currentRoute.includes(term));
+
+    if (hasRouteTerm) {
+    this.sub = this.activatedRoute.params.subscribe(params => { 
+      if(params['name']=='search')
+      {
+        this.productService.filterByName(params['name']).subscribe(res => {
+          console.log(params['name'])
+          this.products = res;
+          console.log(res)
+        })
+      }
+      else
+      {
+        this.filterByCategory(params['name']);
+      }
+    
+    }); 
+    } else {
+    this.getProducts();
     }
 
    

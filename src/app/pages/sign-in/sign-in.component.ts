@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { emailValidator, matchingPasswords } from '../../theme/utils/app-validators';
 import { AuthService } from 'src/app/admin/services/auth.service';
@@ -32,6 +32,8 @@ export class SignInComponent implements OnInit {
       'password': ['', Validators.compose([Validators.required, Validators.minLength(8)])] 
     });
 
+  
+
     this.registerForm = this.formBuilder.group({
       'firstName': ['', Validators.compose([Validators.required, Validators.minLength(3)])],
       'lastName': ['', Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -39,13 +41,43 @@ export class SignInComponent implements OnInit {
       'password': ['', [
         Validators.required,
         Validators.minLength(8),
-        Validators.pattern(/^(?=.*[A-Z])/)
+        Validators.pattern(/^(?=.*[A-Z])/),
+        this.passwordValidator
+       
       ]],
       'confirmPassword': ['', Validators.required]
     },{validator: matchingPasswords('password', 'confirmPassword')});
 
   }
 
+  passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    const password = control.value;
+    const uppercaseRegex = /^(?=.*[A-Z])/;
+    const lowercaseRegex = /^(?=.*[a-z])/;
+    const numberRegex = /^(?=.*\d)/;
+    const specialCharacterRegex = /^(?=.*[!@#$%^&*])/;
+  
+    let errors = {};
+  
+    if (!uppercaseRegex.test(password)) {
+      errors['uppercase'] = true;
+    }
+  
+    if (!lowercaseRegex.test(password)) {
+      errors['lowercase'] = true;
+    }
+  
+    if (!numberRegex.test(password)) {
+      errors['number'] = true;
+    }
+  
+    if (!specialCharacterRegex.test(password)) {
+      errors['specialCharacter'] = true;
+    }
+  
+    return Object.keys(errors).length ? { 'pattern': true, ...errors } : null;
+  }
+ 
   refreshPage(): void {
     location.reload();
   }
@@ -76,19 +108,29 @@ export class SignInComponent implements OnInit {
   
   public onRegisterFormSubmit(values:Object):void {
     if (this.registerForm.valid) {
-      
-      this.loginService.register(this.registerForm.value).subscribe(
-        (response: HttpResponse<any>) => {
-          this.snackBar.open('Sign Up  Successful You can Sign In Now!', '×', { panelClass: 'success', verticalPosition: 'top', duration: 3000 });
-         
-        this.router.navigate(['/sign-in']);
+      const firstName=this.registerForm.controls['firstName'].value
+      const lastName=this.registerForm.controls['lastName'].value
+      const password=this.registerForm.controls['password'].value
+      if(password.includes(firstName) || password.includes(lastName))
+      {
+        this.snackBar.open('Password Must not Contains your Name!', '×', { panelClass: 'error', verticalPosition: 'top', duration: 3000 }); 
+
+      }else 
+      {
+        this.loginService.register(this.registerForm.value).subscribe(
+          (response: HttpResponse<any>) => {
+            this.snackBar.open('Sign Up  Successful You can Sign In Now!', '×', { panelClass: 'success', verticalPosition: 'top', duration: 3000 });
+           
+          this.router.navigate(['/sign-in']);
+        }
+        ,
+        (errorResponse: HttpErrorResponse) => {
+          this.snackBar.open('Sign Up Failed Please Try Again!', '×', { panelClass: 'error', verticalPosition: 'top', duration: 3000 }); 
+          this.router.navigate(['/sign-in']);
+        }
+        )
       }
-      ,
-      (errorResponse: HttpErrorResponse) => {
-        this.snackBar.open('Sign Up Failed Please Try Again!', '×', { panelClass: 'error', verticalPosition: 'top', duration: 3000 }); 
-        this.router.navigate(['/sign-in']);
-      }
-      )
+     
       
     }
   }

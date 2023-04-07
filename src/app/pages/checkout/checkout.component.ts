@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, SecurityContext, ViewChild } from '@angular/core';
 import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import { AbstractControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
@@ -132,11 +132,16 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   public placeOrder(){
 
+    const cardHolderNameControl = this.paymentForm.get('cardHolderName');
+const sanitizedCardHolderName = this.sanitizer.sanitize(SecurityContext.HTML, cardHolderNameControl.value);
+cardHolderNameControl.setValue(sanitizedCardHolderName);
+
     //order
     const quantity=this.appService.Data.totalCartCount;
     const totalPrice=this.appService.Data.totalPrice;
     const status="Pending";
     const paymentMethod="MasterCard";
+    
     var order={
       totalQuantity:quantity,
       totalPrice:totalPrice,
@@ -145,7 +150,8 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
 
     //billingAddress
-    const addressLine=this.billingForm.controls['address'].value;
+    const addressLine=this.sanitizer.sanitize(SecurityContext.HTML, this.billingForm.controls['address'].value);
+    // const addressLine=this.billingForm.controls['address'].value;
     const place=this.billingForm.controls['address'].value
     const city=this.billingForm.controls['city'].value
     const country=this.billingForm.controls['country'].value

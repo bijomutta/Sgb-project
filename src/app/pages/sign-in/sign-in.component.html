@@ -67,9 +67,14 @@
                     <input matInput placeholder="Password" formControlName="password" type="password" minlength="6" required>
                     <mat-error *ngIf="registerForm.controls.password.errors?.required">Password is required.</mat-error>
                     <mat-error *ngIf="registerForm.controls.password.hasError('minlength')">Password must be at least 8 characters long.</mat-error>
-                    <mat-error *ngIf="registerForm.controls.password.hasError('pattern')">Password must contain at least one uppercase letter.</mat-error>
+                    <mat-error *ngIf="registerForm.controls.password.hasError('uppercase')">Password must contain at least one uppercase letter.</mat-error>
+                    <mat-error *ngIf="registerForm.controls.password.hasError('lowercase')">Password must contain at least one lowercase letter.</mat-error>
+                    <mat-error *ngIf="registerForm.controls.password.hasError('specialCharacter')">Password must contain at least one special chartacter letter.</mat-error>
+                    <mat-error *ngIf="registerForm.controls.password.hasError('number')">Password must contain at least one number letter.</mat-error>
+                    <!-- <mat-error *ngIf="registerForm.controls.password.hasError('pattern')">Password must contain at least one uppercase letter.</mat-error> -->
+                    <!-- <mat-error *ngIf="registerForm.controls.password.hasError('pattern')">Password must contain at least one uppercase letter.</mat-error> -->
                 </mat-form-field> 
-                <mat-form-field  appearance="outline" class="w-100 mt-1">
+                <mat-form-field  *ngIf="registerForm.controls.password.valid" appearance="outline" class="w-100 mt-1">
                     <mat-label>Confirm Password</mat-label>
                     <input matInput placeholder="Confirm Password" formControlName="confirmPassword" type="password" required>
                     <mat-error *ngIf="registerForm.controls.confirmPassword.errors?.required">Confirm Password is required</mat-error>
