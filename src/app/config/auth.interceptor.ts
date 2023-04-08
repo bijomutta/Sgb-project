@@ -17,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private authenticationService: AuthService) {}
 
-  
+
   intercept(httpRequest: HttpRequest<any>, httpHandler: HttpHandler): Observable<HttpEvent<any>> {
 
     if (this.shouldExclude(httpRequest.url)) {
@@ -37,7 +37,8 @@ export class AuthInterceptor implements HttpInterceptor {
   // utility method to check if the URL should be excluded
   private shouldExclude(url: string): boolean {
     const excludedUrls = [
-      `${this.apiUrl}/public/`
+      `${this.apiUrl}product/filter-color`,
+      `${this.apiUrl}product/filter-brand`
     ];
 
     return excludedUrls.some(excludedUrl => url.includes(excludedUrl));
