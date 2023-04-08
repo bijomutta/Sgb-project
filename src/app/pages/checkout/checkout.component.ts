@@ -175,7 +175,7 @@ cardHolderNameControl.setValue(sanitizedCardHolderName);
         quantity:item.cartCount,
         name:item.name,
         unitPrice:item.newPrice,
-        image:item.images
+        image:item.image
       }
       items.push(orderItem);
     }
@@ -203,4 +203,10 @@ cardHolderNameControl.setValue(sanitizedCardHolderName);
    
   }
 
+  getLastDigits():string
+  {
+    const cardNumber = this.paymentForm.controls['cardNumber'].value;
+    const lastFourDigits = cardNumber.substr(-4);
+    return lastFourDigits;
+  }
 }

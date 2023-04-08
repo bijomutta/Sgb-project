@@ -5,12 +5,13 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { CategoryService } from '../../services/category.service';
 import { ProductService } from '../../services/product.service';
 import { FileUpload } from 'primeng/fileupload';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss'],
-  providers: [MessageService,ConfirmationService],
+  providers: [MessageService,ConfirmationService,DatePipe],
 
 })
 export class ProductComponent implements OnInit {
@@ -59,7 +60,7 @@ export class ProductComponent implements OnInit {
     private formBuilder:FormBuilder,
     private messageService:MessageService,
     private confirmationService: ConfirmationService,
-    private router:Router) { }
+    private datePipe:DatePipe) { }
 
 
 

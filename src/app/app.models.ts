@@ -8,7 +8,7 @@ export class Category {
 export class Product {
   constructor(public id: number,
               public name: string,
-              public images: Array<any>,
+              public image: any,
               public oldPrice: number,
               public newPrice: number,
               public discount: number,

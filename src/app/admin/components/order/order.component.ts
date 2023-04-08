@@ -3,18 +3,23 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { OrderService } from '../../services/order.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.scss'],
-  providers: [MessageService,ConfirmationService],
+  providers: [MessageService,ConfirmationService,DatePipe],
 
 })
 export class OrderComponent implements OnInit {
 
-
+  displayCustomer:boolean=false;
+  displayAddress:boolean=false;
+  displayOrderItems:boolean=false;
   createDialog: boolean = false;
+  selectedProduct:any;
+  product:any;
 
   deleteDialog: boolean = false;
 
@@ -48,7 +53,7 @@ export class OrderComponent implements OnInit {
     private formBuilder:FormBuilder,
     private messageService:MessageService,
     private confirmationService: ConfirmationService,
-    private router:Router) { }
+    private datePipe:DatePipe) { }
 
 
 
@@ -178,6 +183,20 @@ confirmDelete(event: any) {
 
 
 
+showAdress(product:any)
+{
+  this.selectedProduct=product.id
+  this.displayAddress=true;
+}
+showItems(product:any)
+{
+  this.selectedProduct=product.id
+  this.displayOrderItems=true;
+}
 
-
+showCustomer(product:any)
+{
+  this.selectedProduct=product.id
+  this.displayCustomer=true;
+}
 }

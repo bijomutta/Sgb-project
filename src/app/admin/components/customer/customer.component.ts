@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { CustomerService } from '../../services/customer.service';
@@ -13,8 +13,8 @@ import { UserService } from '../../services/user.service';
 
 })
 export class CustomerComponent implements OnInit {
-
- 
+  displayAddress:boolean=false;
+  selectedProduct:any;
   createDialog: boolean = false;
 
   deleteDialog: boolean = false;
@@ -66,7 +66,13 @@ export class CustomerComponent implements OnInit {
         "firstName":[null, Validators.required],
         "lastName":[null, Validators.required],
         "email":[null, [Validators.required, Validators.email]],
-        "password":[null, [Validators.required, Validators.min(8)]],
+        'password': ['', [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*[A-Z])/),
+          this.passwordValidator
+         
+        ]],
         // "phone": [null, [Validators.required, Validators.pattern('^[0-9]{10}$')]]
        
          
@@ -74,6 +80,35 @@ export class CustomerComponent implements OnInit {
     )
   }
 
+
+  passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    const password = control.value;
+    const uppercaseRegex = /^(?=.*[A-Z])/;
+    const lowercaseRegex = /^(?=.*[a-z])/;
+    const numberRegex = /^(?=.*\d)/;
+    const specialCharacterRegex = /^(?=.*[!@#$%^&*])/;
+  
+    let errors = {};
+  
+    if (!uppercaseRegex.test(password)) {
+      errors['uppercase'] = true;
+    }
+  
+    if (!lowercaseRegex.test(password)) {
+      errors['lowercase'] = true;
+    }
+  
+    if (!numberRegex.test(password)) {
+      errors['number'] = true;
+    }
+  
+    if (!specialCharacterRegex.test(password)) {
+      errors['specialCharacter'] = true;
+    }
+  
+    return Object.keys(errors).length ? { 'pattern': true, ...errors } : null;
+  }
+  
   editProduct(product: any) {
     this.form.patchValue(product);
     console.log(product);
@@ -133,15 +168,25 @@ onSubmit()
 {
   if(this.form.valid)
   {
-    this.customerService.addCustomer(this.form.value).subscribe(res=>{
-      console.log("Customer created");
-      this.messageService.add({severity:'success', summary:'Customer Created', detail:''});
-
-      this.createDialog=false;
-      this.ngOnInit();
-      // this.messageService.add(:
-    })
-  }
+      const firstName=this.form.controls['firstName'].value
+      const lastName=this.form.controls['lastName'].value
+      const password=this.form.controls['password'].value
+    if(password.includes(firstName) || password.includes(lastName))
+      {
+        this.messageService.add({severity:'error', summary:'Password Must not Contains your Name!', detail:''});
+      }else 
+      {
+        this.customerService.addCustomer(this.form.value).subscribe(res=>{
+          console.log("Customer created");
+          this.messageService.add({severity:'success', summary:'Customer Created', detail:''});
+    
+          this.createDialog=false;
+          this.ngOnInit();
+          // this.messageService.add(:
+        })
+      }
+      }
+  
 }
 update()
 {
@@ -188,7 +233,11 @@ confirmDelete(event: any) {
   });
 }
 
-
+showAdress(product:any)
+{
+  this.selectedProduct=product.id
+  this.displayAddress=true;
+}
 
 
 

@@ -1,7 +1,7 @@
 <p-toast></p-toast>
 <p-toolbar styleClass="mb-4 gap-2">
     <ng-template pTemplate="left">
-        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()" style="margin-right: 5px" ></button>
+        <button pButton pRipple label="Update" icon="pi pi-plus" class="p-button-info mr-2" (click)="openNew()" style="margin-right: 5px" ></button>
         <!-- <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" 
         (click)="confirmDelete($event)" 
         [disabled]="!selectedItems || !selectedItems.length"></button> -->
@@ -58,12 +58,122 @@
                 <td>{{product.totalPrice}}</td>
                 <td>{{product.status}}</td>
                 <td>{{product.paymentMethod}}</td>
-                <td>{{product.customer}}</td>
-                <td>{{product.shippingAddress}}</td>
-                <td>{{product.billingAddress}}</td>
-                <td>{{product.dateCreated}}</td>
-                <td>{{product.lastUpdated}}</td>
+                <td> <p-button (click)="showItems(product)" icon="pi pi-external-link" label="Show Order Items"> </p-button>
+                    <p-dialog header="Order Items" [(visible)]="product.id === selectedProduct && displayOrderItems" [style]="{width: '500px'}">
+                        <p-table [value]="product.orderItems" selectionMode="single"   responsiveLayout="scroll">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th >Product Name</th>
+                                    <th >Image</th>
+                                    <th >Quantity</th>
+                                    <th >Unit Price</th>
+                                    <!-- <th >test</th> -->
+                                    
+                                    
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body"  let-item>
+                                <tr>
+                                  <td>{{item.name}}</td>
+                                  <td><img [src]="item.image" height="100px" width="100px" alt=""></td>
+                                  <td>{{item.quantity}}</td>
+                                  <td>{{item.unitPrice}}</td>
+                                 
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        
+                    </p-dialog>
+                </td>
+                <td> <p-button (click)="showCustomer(product)" icon="pi pi-external-link" label="Show Customer"> </p-button>
+                    <p-dialog header="Customer" [(visible)]="product.id === selectedProduct && displayCustomer" [style]="{width: '500px'}">
+                        <p-table  selectionMode="single"   responsiveLayout="scroll">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th >First Name</th>
+                                    <th >Last Name</th>
+                                    <th >Email</th>
+                                    <!-- <th >Unit Price</th> -->
+                                    <!-- <th >test</th> -->
+                                    
+                                    
+                                </tr>
+                                <tr>
+                                    <th >{{product.customer.firstName}}</th>
+                                    <th >{{product.customer.lastName}}</th>
+                                    <th >{{product.customer.email}}</th>
+                                    <!-- <th >Unit Price</th> -->
+                                    <!-- <th >test</th> -->
+                                    
+                                    
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        
+                    </p-dialog>
+                </td>
+                <td> <p-button (click)="showAdress(product)" icon="pi pi-external-link" label="Show Address"> </p-button>
+                    <p-dialog header="Shipping Address" [(visible)]="product.id === selectedProduct && displayAddress" [style]="{width: '500px'}">
+                        <p-table  selectionMode="single"   responsiveLayout="scroll">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th >Address Line</th>
+                                    <th >City </th>
+                                    <th >Country</th>
+                                    <th >Postal Code</th>
+                                    <!-- <th >test</th> -->
+                                    
+                                    
+                                </tr>
+                                <tr>
+                                    <th >{{product.shippingAddress.addressLine}}</th>
+                                    <th >{{product.shippingAddress.city}}</th>
+                                    <th >{{product.shippingAddress.country}}</th>
+                                    <th >{{product.shippingAddress.postalCode}}</th>
+                                    <!-- <th >Unit Price</th> -->
+                                    <!-- <th >test</th> -->
+                                    
+                                    
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        
+                    </p-dialog>
+                </td>
+
+                <td> <p-button (click)="showAdress(product)" icon="pi pi-external-link" label="Show Address"> </p-button>
+                    <p-dialog header="Billing Address" [(visible)]="product.id === selectedProduct && displayAddress" [style]="{width: '500px'}">
+                        <p-table  selectionMode="single"   responsiveLayout="scroll">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th >Address Line</th>
+                                    <th >City </th>
+                                    <th >Country</th>
+                                    <th >Postal Code</th>
+                                    <!-- <th >test</th> -->
+                                    
+                                    
+                                </tr>
+                                <tr>
+                                    <th >{{product.shippingAddress.addressLine}}</th>
+                                    <th >{{product.shippingAddress.city}}</th>
+                                    <th >{{product.shippingAddress.country}}</th>
+                                    <th >{{product.shippingAddress.postalCode}}</th>
+                                    <!-- <th >Unit Price</th> -->
+                                    <!-- <th >test</th> -->
+                                    
+                                    
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        
+                    </p-dialog>
+                </td>
                 
+                <td>{{product.dateCreated | date:'yyyy-MM-dd hh:mm:ss'}}</td>
+                <td>{{product.lastUpdated | date:'yyyy-MM-dd hh:mm:ss'}}</td>
+                
+
             </tr>
         </ng-template>
         <ng-template pTemplate="summary">
@@ -106,5 +216,49 @@
                 <!-- <button *ngIf="newRecord==false" pButton pRipple label="Update" icon="pi pi-check" class="p-button-text" (click)="update()"></button> -->
             </ng-template>
         </p-dialog>
+
+
+<!--       
+
+        <p-dialog header="Customer" [(visible)]="displayCustomer" [style]="{width: '20vw'}">
+            <p-table [value]="products.customer" selectionMode="single"   responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th >test</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"  let-item>
+                    <tr>
+                      <td>test</td>
+                     
+                    </tr>
+                </ng-template>
+            </p-table>
+            
+        </p-dialog>
+
+        <p-dialog header="Address" [(visible)]="displayAddress" [style]="{width: '20vw'}">
+            <p-table [value]="products.billingAddress" selectionMode="single"   responsiveLayout="scroll">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th >Address Line</th>
+                        <th >City</th>
+                        <th >Country</th>
+                        <th >Postal Code</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body"  let-item>
+                    <tr>
+                      <td>{{item.addressLine}}</td>
+                      <td>{{item.city}}</td>
+                      <td>{{item.country}}</td>
+                      <td>{{item.poistalCode}}</td>
+                      
+                     
+                    </tr>
+                </ng-template>
+            </p-table>
+            
+        </p-dialog> -->
 
         <p-confirmPopup></p-confirmPopup>

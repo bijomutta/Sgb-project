@@ -31,7 +31,7 @@
                 <th pSortableColumn="lastName" >Last Name <p-sortIcon field="nitdv"></p-sortIcon></th>
                 <th pSortableColumn="email" >Email <p-sortIcon field="nitdv"></p-sortIcon></th>
                 <th pSortableColumn="phone" >Phone <p-sortIcon field="nitdv"></p-sortIcon></th>
-                <th pSortableColumn="Address" >Address <p-sortIcon field="nitdv"></p-sortIcon></th>
+                <!-- <th pSortableColumn="Address" >Address <p-sortIcon field="nitdv"></p-sortIcon></th> -->
                 <th pSortableColumn="dateCreated" >Date Created <p-sortIcon field="nitdv"></p-sortIcon></th>
             </tr>
             
@@ -54,7 +54,7 @@
                 <td>{{product.lastName}}</td>
                 <td>{{product.email}}</td>
                 <td>{{product.phone}}</td>
-                <td>{{product.billingAddress}}</td>
+                <!-- <td>{{product.billingAddress}}</td> -->
                 <td>{{product.dateCreated}}</td>
                            
             </tr>
@@ -95,8 +95,12 @@
                 <div class="field">
                   <label for="kid">Password </label>
                   <input pInputText formControlName="password" autofocus [ngClass]="{'ng-invalid ng-dirty': submitted && form.controls['password'].hasError('required') || form.controls['password'].hasError('min')}"/>
-                  <small class="p-error" *ngIf="form.controls['password'].hasError('required')">Password is required</small>
-                  <small class="p-error" *ngIf="form.controls['password'].hasError('min')">Password must be at least 8 characters</small>
+                  <small class="p-error" style="display: block" *ngIf="form.controls['password'].touched && form.controls['password'].hasError('required')">Password is required</small>
+                  <small class="p-error" style="display: block" *ngIf="form.controls['password'].touched && form.controls.password.hasError('minlength')">Password must be at least 8 characters long.</small>
+                  <small class="p-error" style="display: block" *ngIf="form.controls['password'].touched && form.controls.password.hasError('uppercase')">Password must contain at least one uppercase letter.</small>
+                  <small class="p-error" style="display: block" *ngIf="form.controls['password'].touched && form.controls.password.hasError('lowercase')">Password must contain at least one lowercase letter.</small>
+                  <small class="p-error" style="display: block" *ngIf="form.controls['password'].touched && form.controls.password.hasError('specialCharacter')">Password must contain at least one special chartacter letter.</small>
+                  <small class="p-error" style="display: block" *ngIf="form.controls['password'].touched && form.controls.password.hasError('number')">Password must contain at least one number letter.</small>
                 </div>
                
                 </form>

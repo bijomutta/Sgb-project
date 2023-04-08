@@ -57,7 +57,7 @@
 
                 <td>{{product.id}}</td>
                 <td>{{product.name}}</td>
-                <td> <img [src]="product.image" height="200px" width="250px" alt="">
+                <td> <img [src]="product.image" height="100px" width="100px" alt="">
                 </td>
                 
                 <td>{{product.category.name}}</td>
@@ -68,8 +68,8 @@
                 <td>{{product.newPrice}} CAD</td>
                 <td>{{product.discount}}  %</td> 
                 <td>{{product.availibilityCount}}</td>
-                <td>{{product.dateCreated}}</td>
-                <td>{{product.lastUpdated}}</td>
+                <td>{{product.dateCreated | date:'yyyy-MM-dd hh:mm:ss'}}</td>
+                <td>{{product.lastUpdated | date:'yyyy-MM-dd hh:mm:ss'}}</td>
 
                 
 

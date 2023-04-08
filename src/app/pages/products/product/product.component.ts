@@ -92,8 +92,8 @@ export class ProductComponent implements OnInit {
   public getProductById(id){
     this.appService.getProductById(id).subscribe(data=>{
       this.product = data;
-      this.image = data.images[0].medium;
-      this.zoomImage = data.images[0].big;
+      this.image = data.image;
+      this.zoomImage = data.image;
       setTimeout(() => { 
         this.config.observer = true;
        // this.directiveRef.setIndex(0);

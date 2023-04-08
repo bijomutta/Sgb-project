@@ -18,7 +18,7 @@
       </div>
     </div>
     <div *ngFor="let product of appService.Data.wishList" class="mat-mdc-row">
-      <div class="mat-mdc-cell"><img [src]="product.images[0].small"></div>
+      <div class="mat-mdc-cell"><img [src]="product.image"></div>
       <div class="mat-mdc-cell"><a [routerLink]="['/products', product.id, product.name]" class="product-name">{{product.name}}</a></div>
       <div class="mat-mdc-cell">${{product.newPrice | number : '1.2-2'}}</div>
       <div class="mat-mdc-cell">{{ (product.availibilityCount > 0) ? 'In stock':'Unavailable'}}</div>
