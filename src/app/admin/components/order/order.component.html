@@ -1,7 +1,7 @@
 <p-toast></p-toast>
 <p-toolbar styleClass="mb-4 gap-2">
     <ng-template pTemplate="left">
-        <button pButton pRipple label="Update" icon="pi pi-plus" class="p-button-info mr-2" (click)="openNew()" style="margin-right: 5px" ></button>
+        <!-- <button pButton pRipple label="Update" icon="pi pi-plus" class="p-button-info mr-2" (click)="openNew()" style="margin-right: 5px" ></button> -->
         <!-- <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" 
         (click)="confirmDelete($event)" 
         [disabled]="!selectedItems || !selectedItems.length"></button> -->
@@ -26,9 +26,10 @@
                 </th>
                
                 <th></th>
+                <th></th>
                 <th pSortableColumn="id" style="min-width:12rem;">ID <p-sortIcon field="id"></p-sortIcon></th>
                 <th pSortableColumn="orderTrackingNumber" style="min-width:12rem;">Tracking Number <p-sortIcon field="nitdv"></p-sortIcon></th>
-                <th pSortableColumn="totalQuantity" style="min-width:12rem;">Tatal Quantity <p-sortIcon field="nitdv"></p-sortIcon></th>
+                <th pSortableColumn="totalQuantity" style="min-width:12rem;">Total Quantity <p-sortIcon field="nitdv"></p-sortIcon></th>
                 <th pSortableColumn="totalPrice" style="min-width:12rem;">Total Price <p-sortIcon field="nitdv"></p-sortIcon></th>
                 <th pSortableColumn="status" style="min-width:12rem;">Status <p-sortIcon field="nitdv"></p-sortIcon></th>
                 <th pSortableColumn="paymentMethod" style="min-width:12rem;">Payment Method <p-sortIcon field="nitdv"></p-sortIcon></th>
@@ -51,6 +52,9 @@
                 <td>
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success " (click)="editProduct(product)"></button>
                 </td>
+                <td>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger " (click)="deleteProduct(product,$event)"></button>
+                </td>
 
                 <td>{{product.id}}</td>
                 <td>{{product.orderTrackingNumber}}</td>
@@ -67,9 +71,6 @@
                                     <th >Image</th>
                                     <th >Quantity</th>
                                     <th >Unit Price</th>
-                                    <!-- <th >test</th> -->
-                                    
-                                    
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body"  let-item>
@@ -184,26 +185,24 @@
     </p-table>
 
 
-    <p-dialog [(visible)]="createDialog" [style]="{width: '450px'}" header="Vehicule News Details" [modal]="true" styleClass="p-fluid">
+    <p-dialog [(visible)]="createDialog" [style]="{width: '450px'}" header="Update Status" [modal]="true" styleClass="p-fluid">
         <ng-template pTemplate="content">
-            <form [formGroup]="form" (ngSubmit)="onSubmit()" >
+            <!-- <form [formGroup]="form" (ngSubmit)="onSubmit()" > -->
     
+                <br>
+                <br><br>
     
-                <div class="field" *ngIf="newRecord==true ">
+                <div class="field" >
                     <label for="imei">Status </label>
-                    <p-dropdown [options]="records" formControlName="userid" placeholder="Select "  optionLabel="email1" optionValue="email1"></p-dropdown>
+                    <p-dropdown [options]="orderStatus"  [(ngModel)]="selectedStatus" placeholder="Select Status" ></p-dropdown>
                     <!-- <input pInputText  formControlName="userid"  autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && form.controls['userid'].hasError('required') }"/> -->
-                    <small class="p-error" *ngIf="submitted && form.controls['userid'].hasError('required')">This field is required</small>
+                    <!-- <small class="p-error" *ngIf="submitted && form.controls['userid'].hasError('required')">This field is required</small> -->
                 </div>
                 
                      
-                <!-- <div class="field"  >
-                        <label for="kid">Plate </label>
-                        <input pInputText  formControlName="vehicle_id"  autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && form.controls['vehicle_id'].hasError('required') }"/>
-                        <small class="p-error" *ngIf="submitted && form.controls['vehicle_id'].hasError('required')">This field is required</small>
-                    </div> -->
+                <br><br><br><br><br><br>
             
-                </form>
+                <!-- </form> -->
     
                
     
@@ -212,7 +211,7 @@
     
             <ng-template pTemplate="footer">
                 <button  pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-                <button *ngIf="newRecord==true" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onSubmit()"></button>
+                <button  pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onSubmit()"></button>
                 <!-- <button *ngIf="newRecord==false" pButton pRipple label="Update" icon="pi pi-check" class="p-button-text" (click)="update()"></button> -->
             </ng-template>
         </p-dialog>

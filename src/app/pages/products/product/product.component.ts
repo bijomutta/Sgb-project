@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, SecurityContext, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { Product } from "../../../app.models";
 import { emailValidator } from '../../../theme/utils/app-validators';
 import { ProductZoomComponent } from './product-zoom/product-zoom.component';
 import { ProductService } from 'src/app/admin/services/product.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-product',
@@ -30,7 +31,8 @@ export class ProductComponent implements OnInit {
     private activatedRoute: ActivatedRoute, 
     public dialog: MatDialog, 
     public formBuilder: UntypedFormBuilder,
-    public productService:ProductService) {  }
+    public productService:ProductService,
+    private sanitizer:DomSanitizer) {  }
 
   ngOnInit() {      
     this.sub = this.activatedRoute.params.subscribe(params => { 
@@ -171,7 +173,9 @@ export class ProductComponent implements OnInit {
 
         this.form.controls['ratingsValue'].patchValue(value);
         this.form.controls['productId'].patchValue(params['id']);
-
+        this.form.controls['name'].patchValue(this.sanitizer.sanitize(SecurityContext.HTML, this.form.controls['name'].value)),
+        this.form.controls['email'].patchValue(this.sanitizer.sanitize(SecurityContext.HTML, this.form.controls['email'].value)),
+        this.form.controls['review'].patchValue(this.sanitizer.sanitize(SecurityContext.HTML, this.form.controls['review'].value))
 
         this.productService.addReview(this.form.value).subscribe(res=>{
           this.ngOnInit();

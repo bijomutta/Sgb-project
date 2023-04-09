@@ -151,7 +151,7 @@
                         <mat-chip-option color="warn" highlighted selectable="false">{{product.discount}}% OFF</mat-chip-option>
                     </mat-chip-listbox>
                     <a [routerLink]="['/products', product.id, product.name]" class="image-link">
-                        <img [src]="product.image" alt="">
+                        <img [src]="product.image"  height="180px" width="170px" alt="">
                     </a>
                     <h4 class="category text-muted">{{ product.category.name }}</h4>                                                                     
                     <a [routerLink]="['/products', product.id, product.name]" class="title text-truncate">

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, SecurityContext } from '@angular/core';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { emailValidator, matchingPasswords } from '../../../theme/utils/app-validators';
 import { AppService } from 'src/app/app.service';
 import { CustomerService } from '../services/customer.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-information',
@@ -16,7 +17,8 @@ export class InformationComponent implements OnInit {
   constructor(public formBuilder: UntypedFormBuilder, 
     public snackBar: MatSnackBar,
     public appService:AppService,
-    private customerService:CustomerService) { }
+    private customerService:CustomerService,
+    private sanitizer:DomSanitizer) { }
 
   ngOnInit() {
 
@@ -35,14 +37,55 @@ export class InformationComponent implements OnInit {
 
     this.passwordForm = this.formBuilder.group({
       'currentPassword': ['', Validators.required],
-      'password': ['', Validators.required],
+      'password': ['', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[A-Z])/),
+        this.passwordValidator
+       
+      ]],
       'confirmNewPassword': ['', Validators.required]
     },{validator: matchingPasswords('password', 'confirmNewPassword')});
   }
 
+
+  passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    const password = control.value;
+    const uppercaseRegex = /^(?=.*[A-Z])/;
+    const lowercaseRegex = /^(?=.*[a-z])/;
+    const numberRegex = /^(?=.*\d)/;
+    const specialCharacterRegex = /^(?=.*[!@#$%^&*])/;
+  
+    let errors = {};
+  
+    if (!uppercaseRegex.test(password)) {
+      errors['uppercase'] = true;
+    }
+  
+    if (!lowercaseRegex.test(password)) {
+      errors['lowercase'] = true;
+    }
+  
+    if (!numberRegex.test(password)) {
+      errors['number'] = true;
+    }
+  
+    if (!specialCharacterRegex.test(password)) {
+      errors['specialCharacter'] = true;
+    }
+  
+    return Object.keys(errors).length ? { 'pattern': true, ...errors } : null;
+  }
+  
   public onInfoFormSubmit(values:Object):void {
     if (this.infoForm.valid) {
-      this.customerService.updateInfo(this.infoForm.value).subscribe(res=>{
+
+      var sanitizedForm={
+        firstName:this.sanitizer.sanitize(SecurityContext.HTML, this.infoForm.controls['firstName'].value),
+        lastName:this.sanitizer.sanitize(SecurityContext.HTML, this.infoForm.controls['lastName'].value),
+        email:this.sanitizer.sanitize(SecurityContext.HTML, this.infoForm.controls['email'].value),
+      }
+      this.customerService.updateInfo(sanitizedForm).subscribe(res=>{
         console.log("infos updated");
         localStorage.setItem("user",JSON.stringify(res));
         this.snackBar.open('Your account information updated successfully!', '×', { panelClass: 'success', verticalPosition: 'top', duration: 3000 });
@@ -54,6 +97,7 @@ export class InformationComponent implements OnInit {
 
   public onPasswordFormSubmit(values:Object):void {
     if (this.passwordForm.valid) {
+      
       // this.passwordForm.removeControl('confirmNewPassword');
       var request={
         email:this.infoForm.controls['email'].value,

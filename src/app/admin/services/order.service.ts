@@ -27,13 +27,13 @@ export class OrderService {
     return this.httpClient.post<any[]>(api, item);    
   }
 
-  updateOrder(id:any,item:any): Observable<any> {
-    const api=`${this.apiUrl}/update/${id}`;
-    return this.httpClient.put<any>(api,item);    
+  updateOrderStatus(id:any,satus:any): Observable<any> {
+    const api=`${this.apiUrl}/update-status/${id}/${satus}`;
+    return this.httpClient.post<any>(api,satus);    
   }
  
   deleteOrder(id:any) {
-    const api=`${this.apiUrl}/update/${id}`;
+    const api=`${this.apiUrl}/delete/${id}`;
     return this.httpClient.delete<any>(api);    
   }
 

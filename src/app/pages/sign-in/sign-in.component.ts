@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SecurityContext } from '@angular/core';
 import { Router } from '@angular/router';
 import { AbstractControl, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -6,6 +6,7 @@ import { emailValidator, matchingPasswords } from '../../theme/utils/app-validat
 import { AuthService } from 'src/app/admin/services/auth.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { AppService } from 'src/app/app.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-sign-in',
@@ -21,7 +22,8 @@ export class SignInComponent implements OnInit {
     public appService:AppService,
     public router:Router, 
     public snackBar: MatSnackBar,
-    private loginService:AuthService) { }
+    private loginService:AuthService,
+    private sanitizer:DomSanitizer) { }
 
   ngOnInit() {
     this.appService.Data.isLoggedIn=false;
@@ -117,7 +119,13 @@ export class SignInComponent implements OnInit {
 
       }else 
       {
-        this.loginService.register(this.registerForm.value).subscribe(
+        var sanitizedForm={
+          firstName:this.sanitizer.sanitize(SecurityContext.HTML, this.registerForm.controls['firstName'].value),
+          lastName:this.sanitizer.sanitize(SecurityContext.HTML, this.registerForm.controls['LastName'].value),
+          email:this.sanitizer.sanitize(SecurityContext.HTML, this.registerForm.controls['email'].value),
+          password:this.registerForm.controls['password'].value
+        }
+        this.loginService.register(sanitizedForm).subscribe(
           (response: HttpResponse<any>) => {
             this.snackBar.open('Sign Up  Successful You can Sign In Now!', '×', { panelClass: 'success', verticalPosition: 'top', duration: 3000 });
            

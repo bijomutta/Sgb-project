@@ -133,7 +133,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   public placeOrder(){
 
     const cardHolderNameControl = this.paymentForm.get('cardHolderName');
-const sanitizedCardHolderName = this.sanitizer.sanitize(SecurityContext.HTML, cardHolderNameControl.value);
+    const sanitizedCardHolderName = this.sanitizer.sanitize(SecurityContext.HTML, cardHolderNameControl.value);
 cardHolderNameControl.setValue(sanitizedCardHolderName);
 
     //order
@@ -152,14 +152,14 @@ cardHolderNameControl.setValue(sanitizedCardHolderName);
     //billingAddress
     const addressLine=this.sanitizer.sanitize(SecurityContext.HTML, this.billingForm.controls['address'].value);
     // const addressLine=this.billingForm.controls['address'].value;
-    const place=this.billingForm.controls['address'].value
-    const city=this.billingForm.controls['city'].value
+    // const place=this.billingForm.controls['address'].value
+    const city=this.sanitizer.sanitize(SecurityContext.HTML, this.billingForm.controls['city'].value)
     const country=this.billingForm.controls['country'].value
-    const postalCode=this.billingForm.controls['zip'].value
+    const postalCode=this.sanitizer.sanitize(SecurityContext.HTML, this.billingForm.controls['zip'].value)
 
     var billingAddress={
       addressLine:addressLine,
-      place:place,
+      place:addressLine,
       city:city,
       country:country.name,
       postalCode:postalCode,
@@ -182,10 +182,10 @@ cardHolderNameControl.setValue(sanitizedCardHolderName);
 
     //customer
     var customer={
-      firstName:this.billingForm.controls['firstName'].value,
-      lastName:this.billingForm.controls['lastName'].value,
-      email:this.billingForm.controls['email'].value,
-      phone:this.billingForm.controls['phone'].value
+      firstName:this.sanitizer.sanitize(SecurityContext.HTML, this.billingForm.controls['firstName'].value),
+      lastName:this.sanitizer.sanitize(SecurityContext.HTML, this.billingForm.controls['lastName'].value),
+      email:this.sanitizer.sanitize(SecurityContext.HTML, this.billingForm.controls['email'].value),
+      phone:this.sanitizer.sanitize(SecurityContext.HTML, this.billingForm.controls['phone'].value)
     }
 
     var request={order:order,billingAddress:billingAddress,shippingAddress:billingAddress,orderItems:items,customer:customer}

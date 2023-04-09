@@ -45,8 +45,12 @@ export class OrderComponent implements OnInit {
 
   qualified:string='qualified';
   unqualified:string='unqualified';
+ 
+  orderStatus=['Pending','Processing','In Delivery','Delivered','Completed','Rejected']
 
-
+  selectedStatus:any;
+  selectedOrder:any;
+  
   newRecord:boolean=true;
 
   constructor(private orderService:OrderService,
@@ -62,47 +66,36 @@ export class OrderComponent implements OnInit {
   
     this.orderService.getOrders().subscribe(res=>this.records=res);
 
-    this.form=this.formBuilder.group(
-      {
-        "device":null,
-        "id":null,
-        "imei":null,
-        "latitude":null,
-        "longitude":null,
-        "legacy_id":null,
-        "name":null,
-        "newest_record":null,
-        "operator":null,
-        "operator_plan":null,
-        "packagesstuck":null,
-        "parent":null,
-        "payment_agreement1":null,
-        "payment_issue":null,
-        "phone":null,
-        "plate":null,
-        "plate_oo":null,
-        "primary":null,
-        "sigla":null,
-        "sim_id":null,
-        "t_state":null,
-        "v_state":null,
-        "vehicle_id":null
-         
-      }
-    )
   }
 
   editProduct(product: any) {
     this.form.patchValue(product);
     console.log(product);
       // this.customer = { ...product };
+      this.selectedOrder=product.id;
       this.createDialog = true;
   }
 
-  deleteProduct(product: any) {
-    this.deleteDialog = true;
-    // this.product = { ...product };
+  deleteProduct(product: any,event:any) {
+    this.confirmationService.confirm({
+      target: event.target,
+      message: 'Are you sure that you want to proceed?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        
+        this.orderService.deleteOrder(product.id).subscribe(res=>{
 
+          this.messageService.add({severity:'info', summary:'Confirmed', detail:'You have Deleted '+product.id });
+
+          this.ngOnInit();
+        })
+          // this.messageService.add({severity:'info', summary:'Confirmed', detail:'You have Deleted '+this.selectedItems.length+' Items' });
+
+      },
+      reject: () => {
+          this.messageService.add({severity:'error', summary:'Rejected', detail:'You have rejected'});
+      }
+  });
 }
 
 hideDialog() {
@@ -111,43 +104,22 @@ hideDialog() {
   this.submitted = false;
 }
 
-openNew() { 
-  const clietNew= 
-  {
-    "device":null,
-    "id":null,
-    "imei":null,
-    "latitude":null,
-    "longitude":null,
-    "legacy_id":null,
-    "name":null,
-    "newest_record":null,
-    "operator":null,
-    "operator_plan":null,
-    "packagesstuck":null,
-    "parent":null,
-    "payment_agreement1":null,
-    "payment_issue":null,
-    "phone":null,
-    "plate":null,
-    "plate_oo":null,
-    "primary":null,
-    "sigla":null,
-    "sim_id":null,
-    "t_state":null,
-    "v_state":null,
-    "vehicle_id":null
-    
-   
-}
-   this.form.patchValue(clietNew)
-  //  this.customer.id =null!;
-   this.submitted = false;
-   this.createDialog = true;
-}
 
 onSubmit()
-{}
+{
+  console.log("update yes")
+  // if(this.selectedOrder!=null && this.selectedStatus!=null)
+  
+    this.orderService.updateOrderStatus(this.selectedOrder,this.selectedStatus).subscribe(res=>{
+      
+      this.messageService.add({severity:'success', summary:'Confirmed', detail:'Order Status Updated' });
+      console.log("updated yess");
+      this.hideDialog();
+    });
+  
+}
+
+
 
 confirmDelete(event: any) {
   var items: any[]=[];

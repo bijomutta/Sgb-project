@@ -38,7 +38,8 @@ export class AuthInterceptor implements HttpInterceptor {
   private shouldExclude(url: string): boolean {
     const excludedUrls = [
       `${this.apiUrl}product/filter-color`,
-      `${this.apiUrl}product/filter-brand`
+      `${this.apiUrl}product/filter-brand`,
+      `${this.apiUrl}product/add-review`
     ];
 
     return excludedUrls.some(excludedUrl => url.includes(excludedUrl));
