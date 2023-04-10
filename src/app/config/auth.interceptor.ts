@@ -51,11 +51,12 @@ export class AuthInterceptor implements HttpInterceptor {
       `${this.apiUrl}product/`,
       `${this.apiUrl}category/`,
       `${this.apiUrl}order/`,
-      `${this.apiUrl}user/`
+      `${this.apiUrl}user/`,
+      `${this.authUrl}actuator/`
     ];
 
     // const includedMethods = ['POST', 'PUT', 'DELETE'];
-    const includedMethods = (url.includes(`${this.apiUrl}order/`) || url.includes(`${this.apiUrl}user/`)) ? ['POST', 'PUT', 'DELETE', 'GET'] : ['POST', 'PUT', 'DELETE'];
+    const includedMethods = (url.includes(`${this.apiUrl}order/`) || url.includes(`${this.apiUrl}user/`) || url.includes( `${this.authUrl}actuator/`) ) ? ['POST', 'PUT', 'DELETE', 'GET'] : ['POST', 'PUT', 'DELETE'];
 
     // return includedUrls.some(includedUrl => {
     //   return url.includes(includedUrl) && includedMethods.includes(method);
@@ -71,7 +72,8 @@ export class AuthInterceptor implements HttpInterceptor {
       `${this.apiUrl}product/`,
       `${this.apiUrl}category/`,
       `${this.apiUrl}order/`,
-      `${this.apiUrl}user/`
+      `${this.apiUrl}user/`,
+      `${this.authUrl}actuator/`
     ];
 
     return authenticatedUrls.some(authenticatedUrl => url.includes(authenticatedUrl));
