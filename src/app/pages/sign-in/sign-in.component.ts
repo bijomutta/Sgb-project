@@ -18,9 +18,9 @@ export class SignInComponent implements OnInit {
   registerForm: UntypedFormGroup;
   private isFirstVisit = true;
 
-  constructor(public formBuilder: UntypedFormBuilder, 
+  constructor(public formBuilder: UntypedFormBuilder,
     public appService:AppService,
-    public router:Router, 
+    public router:Router,
     public snackBar: MatSnackBar,
     private loginService:AuthService,
     private sanitizer:DomSanitizer) { }
@@ -31,10 +31,10 @@ export class SignInComponent implements OnInit {
     // this.refreshPage();
     this.loginForm = this.formBuilder.group({
       'email': ['', Validators.compose([Validators.required, emailValidator])],
-      'password': ['', Validators.compose([Validators.required, Validators.minLength(8)])] 
+      'password': ['', Validators.compose([Validators.required, Validators.minLength(8)])]
     });
 
-  
+
 
     this.registerForm = this.formBuilder.group({
       'firstName': ['', Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -45,7 +45,7 @@ export class SignInComponent implements OnInit {
         Validators.minLength(8),
         Validators.pattern(/^(?=.*[A-Z])/),
         this.passwordValidator
-       
+
       ]],
       'confirmPassword': ['', Validators.required]
     },{validator: matchingPasswords('password', 'confirmPassword')});
@@ -58,28 +58,28 @@ export class SignInComponent implements OnInit {
     const lowercaseRegex = /^(?=.*[a-z])/;
     const numberRegex = /^(?=.*\d)/;
     const specialCharacterRegex = /^(?=.*[!@#$%^&*])/;
-  
+
     let errors = {};
-  
+
     if (!uppercaseRegex.test(password)) {
       errors['uppercase'] = true;
     }
-  
+
     if (!lowercaseRegex.test(password)) {
       errors['lowercase'] = true;
     }
-  
+
     if (!numberRegex.test(password)) {
       errors['number'] = true;
     }
-  
+
     if (!specialCharacterRegex.test(password)) {
       errors['specialCharacter'] = true;
     }
-  
+
     return Object.keys(errors).length ? { 'pattern': true, ...errors } : null;
   }
- 
+
   refreshPage(): void {
     location.reload();
   }
@@ -89,7 +89,7 @@ export class SignInComponent implements OnInit {
         (response: any) => {
           console.log(response)
           console.log(response)
-          this.snackBar.open('Login Successful ', '×', { panelClass: 'success', verticalPosition: 'top', duration: 3000 }); 
+          this.snackBar.open('Login Successful ', '×', { panelClass: 'success', verticalPosition: 'top', duration: 3000 });
         this.loginService.addUserToLocalCache(response.user);
         this.loginService.saveToken(response.token);
         this.appService.Data.isLoggedIn=true;
@@ -99,15 +99,15 @@ export class SignInComponent implements OnInit {
       }
       ,
       (errorResponse: HttpErrorResponse) => {
-        this.snackBar.open('Login Failed !', '×', { panelClass: 'error', verticalPosition: 'top', duration: 3000 }); 
+        this.snackBar.open('Login Failed !', '×', { panelClass: 'error', verticalPosition: 'top', duration: 3000 });
         this.router.navigate(['/sign-in']);
       }
       )
-      
+
     }
   }
 
-  
+
   public onRegisterFormSubmit(values:Object):void {
     if (this.registerForm.valid) {
       const firstName=this.registerForm.controls['firstName'].value
@@ -115,31 +115,31 @@ export class SignInComponent implements OnInit {
       const password=this.registerForm.controls['password'].value
       if(password.includes(firstName) || password.includes(lastName))
       {
-        this.snackBar.open('Password Must not Contains your Name!', '×', { panelClass: 'error', verticalPosition: 'top', duration: 3000 }); 
+        this.snackBar.open('Password Must not Contains your Name!', '×', { panelClass: 'error', verticalPosition: 'top', duration: 3000 });
 
-      }else 
+      }else
       {
         var sanitizedForm={
           firstName:this.sanitizer.sanitize(SecurityContext.HTML, this.registerForm.controls['firstName'].value),
-          lastName:this.sanitizer.sanitize(SecurityContext.HTML, this.registerForm.controls['LastName'].value),
+          lastName:this.sanitizer.sanitize(SecurityContext.HTML, this.registerForm.controls['lastName'].value),
           email:this.sanitizer.sanitize(SecurityContext.HTML, this.registerForm.controls['email'].value),
           password:this.registerForm.controls['password'].value
         }
         this.loginService.register(sanitizedForm).subscribe(
           (response: HttpResponse<any>) => {
             this.snackBar.open('Sign Up  Successful You can Sign In Now!', '×', { panelClass: 'success', verticalPosition: 'top', duration: 3000 });
-           
+
           this.router.navigate(['/sign-in']);
         }
         ,
         (errorResponse: HttpErrorResponse) => {
-          this.snackBar.open('Sign Up Failed Please Try Again!', '×', { panelClass: 'error', verticalPosition: 'top', duration: 3000 }); 
+          this.snackBar.open('Sign Up Failed Please Try Again!', '×', { panelClass: 'error', verticalPosition: 'top', duration: 3000 });
           this.router.navigate(['/sign-in']);
         }
         )
       }
-     
-      
+
+
     }
   }
 
